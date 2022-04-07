@@ -1,8 +1,22 @@
 #include <stdio.h>
 #include "twitter_create.h"
 
+void printKeyInfo();
 
 int main() {
+
+
+    void(*f[7])(void) = {createUsers,postTweets,followUsers,unfollowUsers,deleteUser,endTurn,endTwitter};
+    printKeyInfo();
+    size_t choice;
+    scanf("%u",&choice);
+
+    while (choice >=0 && choice <= 6){
+        (*f[choice])();
+
+        printKeyInfo();
+        scanf("%u",&choice);
+    }
 
     twitter twitter_system;
     create_twitter_system(&twitter_system);
@@ -19,7 +33,17 @@ int main() {
     //implement here the code to print the users
     // for each user you need to print the username, the number of followers and the number of users that the current user is following
 
+}
 
 
 
+void printKeyInfo(){
+    printf("Enter the number between 0 and 6:\n");
+    printf("Enter 0: Create a user\n");
+    printf("Enter 1: Post tweets\n");
+    printf("Enter 2: Follow users\n");
+    printf("Enter 3: Unfollow users\n");
+    printf("Enter 4: delete the user\n");
+    printf("Enter 5: End this turn\n");
+    printf("Enter 6: End the Twitter system\n");
 }
