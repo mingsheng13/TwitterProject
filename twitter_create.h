@@ -38,3 +38,10 @@ typedef struct twitter{
 } twitter;
 
 void create_twitter_system(twitter * twitter_system);
+void createUsers();
+void postTweets();
+void followUsers();
+void unfollowUsers();
+void deleteUser();
+void endTurn();
+void endTwitter();
