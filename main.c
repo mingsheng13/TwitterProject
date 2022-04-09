@@ -3,7 +3,7 @@
 
 void printKeyInfo();
 
-int main() {
+int main(){
 
 
     void(*f[7])(void) = {createUsers,postTweets,followUsers,unfollowUsers,deleteUser,endTurn,endTwitter};
@@ -37,13 +37,4 @@ int main() {
 
 
 
-void printKeyInfo(){
-    printf("Enter the number between 0 and 6:\n");
-    printf("Enter 0: Create a user\n");
-    printf("Enter 1: Post tweets\n");
-    printf("Enter 2: Follow users\n");
-    printf("Enter 3: Unfollow users\n");
-    printf("Enter 4: delete the user\n");
-    printf("Enter 5: End this turn\n");
-    printf("Enter 6: End the Twitter system\n");
-}
+
