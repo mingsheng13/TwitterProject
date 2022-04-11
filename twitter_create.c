@@ -26,7 +26,7 @@ void printUsers(userPtr userList)       //print all users in the linked list
 
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
 {
-
+    //to be done.
 }
 
 void insertUser(userPtr* userList, char username[USR_LENGTH])
@@ -56,7 +56,6 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
 }
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
 {
-    //to be done.
     tweetPtr previousNode = NULL;
     tweetPtr currentNode = *tweetList;
     tweetPtr newTweetNode = (tweetPtr)malloc(sizeof(tweet));
