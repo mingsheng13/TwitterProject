@@ -24,7 +24,12 @@ void printUsers(userPtr userList)       //print all users in the linked list
     }
 }
 
-void insertUser(userPtr* userList, char username[USR_LENGHT])
+void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
+{
+
+}
+
+void insertUser(userPtr* userList, char username[USR_LENGTH])
 {
     userPtr previousNode = NULL;
     userPtr currentNode = *userList;
@@ -49,9 +54,34 @@ void insertUser(userPtr* userList, char username[USR_LENGHT])
         previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
     }
 }
-void insertTweet(tweetPtr* tweetList)
+void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
 {
     //to be done.
+    tweetPtr previousNode = NULL;
+    tweetPtr currentNode = *tweetList;
+    tweetPtr newTweetNode = (tweetPtr)malloc(sizeof(tweet));
+    strcpy(newTweetNode -> msg, msg);
+    newTweetNode -> id = *id;
+    *id = *id +1;       //change the total number of tweets.
+    strcpy(newTweetNode -> user, author);
+    newTweetNode -> nextPtr = NULL;
+
+    while(currentNode != NULL)
+    {
+        previousNode = currentNode;
+        currentNode = currentNode -> nextPtr;
+    }
+
+    if(previousNode == NULL)
+    {
+        *tweetList = newTweetNode;
+    }
+    else
+    {
+        previousNode -> nextPtr = newTweetNode;
+    }
+
+
 }
 
 void printKeyInfo();
@@ -77,9 +107,9 @@ void create_twitter_system(twitter * twitter_system){
 }
 
 void createUsers(twitter* twitter_system){      //create user and prints all available users.
-    char username[USR_LENGHT];
+    char username[USR_LENGTH];
     printf("Enter Username: ");
-    fgets(username, USR_LENGHT, stdin);     //use fgets to scan string
+    fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
 
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
