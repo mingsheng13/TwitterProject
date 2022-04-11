@@ -18,13 +18,15 @@ void printKeyInfo();
 void create_twitter_system(twitter * twitter_system){
     
     printKeyInfo();
-    twitter_system->num_users = 0;
-    twitter_system ->num_tweets = 0;
-    size_t choice;
-    scanf("%u",&choice);
+    twitter_system -> num_users = 0;
+    twitter_system -> num_tweets = 0;
+    twitter_system -> username = NULL;      //init. the username linked list
+    twitter_system -> news_feed = NULL;
+    unsigned int choice;
+    scanf("%u", &choice);
     fflush(stdin);
 
-    while (choice >=0 && choice <= 6){
+    while (choice >= 0 && choice <= 6){
         switch (choice) {
             case 0:
                 createUsers(twitter_system);
@@ -47,6 +49,8 @@ void create_twitter_system(twitter * twitter_system){
             case 6:
                 endTwitter(twitter_system);
                 break;
+            default:
+                puts("error");
         }
 
         printKeyInfo();
@@ -63,16 +67,22 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
 
-    strcpy(twitter_system->users[twitter_system->num_users].username, username);
-    twitter_system-> users[twitter_system->num_users].num_followers = 0;
-    twitter_system->users[twitter_system->num_users].num_following = 0;
-    twitter_system->num_users += 1;     //total number of user increase by 1.
+    insertUser(&twitter_system -> username, username);      //insert username into linkedList
 
-    //This is a print to show all the information when creating the users
-    for(int i =0; i < twitter_system->num_users; i++){
-        user usr = twitter_system->users[i];
-        printf("User: %s; Followers: %d; Following: %d\n",usr.username, usr.num_followers, usr.num_followers );
-    }
+    twitter_system -> num_users += 1;
+
+    printUsers(twitter_system -> username);
+
+//    strcpy(twitter_system->users[twitter_system->num_users].username, username);
+//    twitter_system-> users[twitter_system->num_users].num_followers = 0;
+//    twitter_system->users[twitter_system->num_users].num_following = 0;
+//    twitter_system->num_users += 1;     //total number of user increase by 1.
+//
+//    //This is a print to show all the information when creating the users
+//    for(int i =0; i < twitter_system->num_users; i++){
+//        user usr = twitter_system->users[i];
+//        printf("User: %s; Followers: %d; Following: %d\n",usr.username, usr.num_followers, usr.num_followers );
+//    }
     puts("");
 }
 
@@ -135,14 +145,24 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
 {
     userPtr previousNode = NULL;
     userPtr currentNode = *userList;
-    userPtr newNode = (userPtr)malloc(sizeof(user));
+    userPtr newNode = (userPtr)malloc(sizeof(user));        //allocate memory
+    if(newNode == NULL)
+    {
+        printf("error allocating memory");
+        exit(0);
+    }
     strcpy(newNode -> username, username);
     newNode -> num_followers = 0;
     newNode -> num_following = 0;
-    newNode -> nextPtr = NULL;
+    newNode -> nextPtr = NULL;      //since we are only appending, the newNode's nextPtr always points to NULL
 
     while(currentNode != NULL)      //loop to the last place in the list.
     {
+        if(strcmp(currentNode -> username, username) == 0)      //same username inputted
+        {
+            printf("Username already existed, please try again.");
+            return;
+        }
         previousNode = currentNode;
         currentNode = currentNode -> nextPtr;
     }

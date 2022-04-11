@@ -37,8 +37,8 @@ typedef struct user{
 typedef user* userPtr;
 
 typedef struct twitter{
-    tweet news_feed[MAX_TWEETS];
-    user users[MAX_USERS];
+    tweetPtr news_feed;
+    userPtr username;
     int num_tweets;
     int num_users;
 
