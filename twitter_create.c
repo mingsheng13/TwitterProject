@@ -8,80 +8,10 @@
 #include "twitter_create.h"
 
 
-void printUsers(userPtr userList)       //print all users in the linked list
-{
-    if(userList == NULL)        //the list is empty.
-    {
-        puts("No user available");
-    }
-    else
-    {
-        while(userList != NULL)     //loop through every user in the list
-        {
-            printf("User: %s; Followers: %d; Following: %d\n",userList -> username, userList -> num_followers, userList -> num_followers );
-            userList = userList -> nextPtr;
-        }
-    }
-}
-
-void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
-{
-    //to be done.
-}
-
-void insertUser(userPtr* userList, char username[USR_LENGTH])
-{
-    userPtr previousNode = NULL;
-    userPtr currentNode = *userList;
-    userPtr newNode = (userPtr)malloc(sizeof(user));
-    strcpy(newNode -> username, username);
-    newNode -> num_followers = 0;
-    newNode -> num_following = 0;
-    newNode -> nextPtr = NULL;
-
-    while(currentNode != NULL)      //loop to the last place in the list.
-    {
-        previousNode = currentNode;
-        currentNode = currentNode -> nextPtr;
-    }
-
-    if(previousNode == NULL)        //first one in the list.
-    {
-        *userList = newNode;
-    }
-    else
-    {
-        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
-    }
-}
-void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
-{
-    tweetPtr previousNode = NULL;
-    tweetPtr currentNode = *tweetList;
-    tweetPtr newTweetNode = (tweetPtr)malloc(sizeof(tweet));
-    strcpy(newTweetNode -> msg, msg);
-    newTweetNode -> id = *id;
-    *id = *id +1;       //change the total number of tweets.
-    strcpy(newTweetNode -> user, author);
-    newTweetNode -> nextPtr = NULL;
-
-    while(currentNode != NULL)
-    {
-        previousNode = currentNode;
-        currentNode = currentNode -> nextPtr;
-    }
-
-    if(previousNode == NULL)
-    {
-        *tweetList = newTweetNode;
-    }
-    else
-    {
-        previousNode -> nextPtr = newTweetNode;
-    }
-
-
-}
+void printUsers(userPtr userList);       //print all users in the linked list
+void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
+void insertUser(userPtr* userList, char username[USR_LENGTH]);
+void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
 
 void printKeyInfo();
 
@@ -97,7 +27,7 @@ void create_twitter_system(twitter * twitter_system){
     while (choice >=0 && choice <= 6){
         switch (choice) {
             case 0:
-                createUsers( twitter_system);
+                createUsers(twitter_system);
                 break;
             case 1:
                 postTweets(twitter_system);
@@ -154,7 +84,7 @@ void postTweets(twitter* twitter_system){
 }
 
 void followUsers(twitter* twitter_system){
-    printf("Test for followUSers success.\n");
+    printf("Test for followUsers success.\n");
 }
 
 void unfollowUsers(twitter* twitter_system){
@@ -182,4 +112,79 @@ void printKeyInfo(){
     printf("Enter 4: delete the user\n");
     printf("Enter 5: End this turn\n");
     printf("Enter 6: End the Twitter system\n");
+}
+
+void printUsers(userPtr userList)       //print all users in the linked list
+{
+    if(userList == NULL)        //the list is empty.
+    {
+        puts("No user available");
+    }
+    else
+    {
+        while(userList != NULL)     //loop through every user in the list
+        {
+            printf("User: %s; Followers: %d; Following: %d\n",userList -> username, userList -> num_followers, userList -> num_followers );
+            userList = userList -> nextPtr;
+        }
+    }
+}
+
+
+void insertUser(userPtr* userList, char username[USR_LENGTH])
+{
+    userPtr previousNode = NULL;
+    userPtr currentNode = *userList;
+    userPtr newNode = (userPtr)malloc(sizeof(user));
+    strcpy(newNode -> username, username);
+    newNode -> num_followers = 0;
+    newNode -> num_following = 0;
+    newNode -> nextPtr = NULL;
+
+    while(currentNode != NULL)      //loop to the last place in the list.
+    {
+        previousNode = currentNode;
+        currentNode = currentNode -> nextPtr;
+    }
+
+    if(previousNode == NULL)        //first one in the list.
+    {
+        *userList = newNode;
+    }
+    else
+    {
+        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
+    }
+}
+
+void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
+{
+    tweetPtr previousNode = NULL;
+    tweetPtr currentNode = *tweetList;
+    tweetPtr newTweetNode = (tweetPtr)malloc(sizeof(tweet));
+    strcpy(newTweetNode -> msg, msg);
+    newTweetNode -> id = *id;
+    *id = *id +1;       //change the total number of tweets.
+    strcpy(newTweetNode -> user, author);
+    newTweetNode -> nextPtr = NULL;
+
+    while(currentNode != NULL)
+    {
+        previousNode = currentNode;
+        currentNode = currentNode -> nextPtr;
+    }
+
+    if(previousNode == NULL)
+    {
+        *tweetList = newTweetNode;
+    }
+    else
+    {
+        previousNode -> nextPtr = newTweetNode;
+    }
+
+}
+void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
+{
+    //to be done
 }
