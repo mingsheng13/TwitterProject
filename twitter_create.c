@@ -87,9 +87,7 @@ void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char auth
 void printKeyInfo();
 
 void create_twitter_system(twitter * twitter_system){
-
-    //to be completed
-    void(*f[7])(twitter*) = {createUsers,postTweets,followUsers,unfollowUsers,deleteUser,endTurn,endTwitter};
+    
     printKeyInfo();
     twitter_system->num_users = 0;
     twitter_system ->num_tweets = 0;
@@ -98,7 +96,29 @@ void create_twitter_system(twitter * twitter_system){
     fflush(stdin);
 
     while (choice >=0 && choice <= 6){
-        (*f[choice])(twitter_system);
+        switch (choice) {
+            case 0:
+                createUsers( twitter_system);
+                break;
+            case 1:
+                postTweets(twitter_system);
+                break;
+            case 2:
+                followUsers(twitter_system);
+                break;
+            case 3:
+                unfollowUsers(twitter_system);
+                break;
+            case 4:
+                deleteUser(twitter_system);
+                break;
+            case 5:
+                endTurn(twitter_system);
+                break;
+            case 6:
+                endTwitter(twitter_system);
+                break;
+        }
 
         printKeyInfo();
         scanf("%u",&choice);
