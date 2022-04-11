@@ -21,13 +21,18 @@ typedef struct tweet{
 
 }tweet;
 
+typedef struct tweet * tweetPtr;
+
 typedef struct user{
     char username[USR_LENGHT];
     char followers[MAX_FOLLOWERS];
     int num_followers;
     char following[MAX_FOLLOWING];
     int num_following;
+    struct user* nextPtr;
 }user;
+
+typedef user* userPtr;
 
 typedef struct twitter{
     tweet news_feed[MAX_TWEETS];
@@ -38,10 +43,10 @@ typedef struct twitter{
 } twitter;
 
 void create_twitter_system(twitter * twitter_system);
-void createUsers();
-void postTweets();
-void followUsers();
-void unfollowUsers();
-void deleteUser();
-void endTurn();
-void endTwitter();
+void createUsers(twitter * twitter_system);
+void postTweets(twitter * twitter_system);
+void followUsers(twitter * twitter_system);
+void unfollowUsers(twitter * twitter_system);
+void deleteUser(twitter * twitter_system);
+void endTurn(twitter * twitter_system);
+void endTwitter(twitter * twitter_system);
