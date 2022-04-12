@@ -47,6 +47,7 @@ typedef struct twitter{
 
 void create_twitter_system(twitter * twitter_system);
 void createUsers(twitter * twitter_system);
+void selectUser(twitter * twitter_system);
 void postTweets(twitter * twitter_system);
 void followUsers(twitter * twitter_system);
 void unfollowUsers(twitter * twitter_system);
