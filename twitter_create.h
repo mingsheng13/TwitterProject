@@ -39,6 +39,7 @@ typedef user* userPtr;
 typedef struct twitter{
     tweetPtr news_feed;
     userPtr username;
+    char currentUser[USR_LENGTH];
     int num_tweets;
     int num_users;
 

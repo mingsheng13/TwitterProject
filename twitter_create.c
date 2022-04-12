@@ -17,11 +17,13 @@ void printKeyInfo();
 
 void create_twitter_system(twitter * twitter_system){
     
-    printKeyInfo();
+    strcpy(twitter_system -> currentUser, "Not Selected");
     twitter_system -> num_users = 0;
     twitter_system -> num_tweets = 0;
     twitter_system -> username = NULL;      //init. the username linked list
     twitter_system -> news_feed = NULL;
+    printf("Current user is: %s\n", twitter_system -> currentUser);
+    printKeyInfo();
     unsigned int choice;
     scanf("%u", &choice);
     fflush(stdin);
@@ -52,8 +54,9 @@ void create_twitter_system(twitter * twitter_system){
             default:
                 puts("error");
         }
-
+        printf("Current user is: %s\n", twitter_system -> currentUser);
         printKeyInfo();
+
         scanf("%u",&choice);
         fflush(stdin);
     }
@@ -73,7 +76,13 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 
     printUsers(twitter_system -> username);
 
-    puts("");
+
+    puts("==============================================");
+}
+
+void selectUser(twitter* twitter_system)
+{
+    //to be written.
 }
 
 void postTweets(twitter* twitter_system){
