@@ -8,7 +8,7 @@
 #include "twitter_create.h"
 
 
-void printUsers(userPtr userList);       //print all users in the linked list
+int printUsers(userPtr userList);       //print all users in the linked list
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
 void insertUser(userPtr* userList, char username[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
@@ -57,7 +57,7 @@ void create_twitter_system(twitter * twitter_system){
             default:
                 puts("error");
         }
-//        printf("Current user is: %s\n", twitter_system -> currentUser);
+        printf("Current user is: %s\n", twitter_system -> currentUser);
         printKeyInfo();
 
         scanf("%u",&choice);
@@ -84,32 +84,34 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 }
 
 void selectUser(twitter * twitter_system){
-//    printf("")
-
     userPtr userList = twitter_system -> username;
-//    userPtr currentNode =
     char user[USR_LENGTH];
-    printUsers(twitter_system -> username);
+    if(printUsers(userList) == 0)
+    {
+        return;
+    }
     printf("Please enter a user name:\n");
     fgets(user, USR_LENGTH, stdin);     //use fgets to scan string
 
     if(user[strlen(user)-1] =='\n')     //replace the newline char with null char.
         user [strlen(user)-1] = '\0';
+
     while (userList != NULL){
         if(strcmp(user,userList -> username) == 0){
             printf("Found the user!\n");
             strcpy(twitter_system -> currentUser,userList -> username);
-            printf("Current user is : %s\n", user);
             return;
         }
-        if(userList == NULL){
-            break;
+        userList = userList -> nextPtr;
+    }
+    if(userList == NULL)
+    {
+        if(strcmp(twitter_system -> currentUser, "Not Selected") == 0){
+            puts("User not found!");
+            return;
         }
     }
-    if(strcmp(twitter_system -> currentUser, "Not Selected") == 0){
-        puts("User not found!");
-        return;
-    }
+
 }
 
 
@@ -198,11 +200,12 @@ void printKeyInfo(){
     printf("Enter 7: End the Twitter system\n");
 }
 
-void printUsers(userPtr userList)       //print all users in the linked list
+int printUsers(userPtr userList)       //print all users in the linked list
 {
     if(userList == NULL)        //the list is empty.
     {
         puts("No user available");
+        return 0;
     }
     else
     {
@@ -211,6 +214,7 @@ void printUsers(userPtr userList)       //print all users in the linked list
             printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
             userList = userList -> nextPtr;
         }
+        return 1;
     }
 }
 
