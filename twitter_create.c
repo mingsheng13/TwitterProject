@@ -17,7 +17,7 @@ void printKeyInfo();
 
 void create_twitter_system(twitter * twitter_system){
     
-    strcpy(twitter_system -> currentUser, "Not Selected");
+    strcpy(twitter_system -> currentUser, "Not Selected");      //init. the current user as Not Selected
     twitter_system -> num_users = 0;
     twitter_system -> num_tweets = 0;
     twitter_system -> username = NULL;      //init. the username linked list
@@ -46,7 +46,7 @@ void create_twitter_system(twitter * twitter_system){
                 unfollowUsers(twitter_system);
                 break;
             case 5:
-                deleteUser(&twitter_system -> username);
+                deleteUser(twitter_system);
                 break;
             case 6:
                 endTurn(twitter_system);
@@ -116,6 +116,13 @@ void selectUser(twitter * twitter_system){
 
 
 void postTweets(twitter* twitter_system){
+
+    if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
+    {
+        puts("Please select a user before posting tweet");
+        return;
+    }
+
     char tweetInput[TWEET_LENGTH];
     puts("Enter your tweet: ");
     fgets(tweetInput,TWEET_LENGTH,stdin);
@@ -138,11 +145,11 @@ void unfollowUsers(twitter* twitter_system){
     printf("Test for unfollowUsers success.\n");
 }
 
-void deleteUser(userPtr* userList){
+void deleteUser(twitter* twitter_system){
     //link the previous node to next node and use free()
     char username[USR_LENGTH];
     userPtr previousPtr = NULL;
-    userPtr currentPtr = *userList;
+    userPtr currentPtr = twitter_system -> username;
 
     if(currentPtr == NULL)
     {
@@ -150,32 +157,43 @@ void deleteUser(userPtr* userList){
         return;
     }
 
-    printUsers(*userList);
+    printUsers(twitter_system -> username);
     printf("Enter the username that you want to delete:");
     fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
 
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
 
+    if(strcmp(twitter_system -> currentUser, username) == 0)    //if the current user is the currently selected user.
+    {
+        strcpy(twitter_system -> currentUser, "Not Selected");
+    }
+
     while(currentPtr != NULL && strcmp(currentPtr -> username, username) != 0)      //loop through the list and
     {                                                                               //stop if the username is found
         previousPtr = currentPtr;
         currentPtr = currentPtr -> nextPtr;
     }
-    if(previousPtr == NULL)
+
+    if(currentPtr == NULL)      //if username is not found in the list
     {
-        *userList = currentPtr -> nextPtr;
+        puts("Error username entered! ");
+        return;
+    }
+
+    if(previousPtr == NULL)     //if the username is the first one in the list
+    {
+        twitter_system -> username = currentPtr -> nextPtr;
+        puts("User deleted.");
     }
     else if(strcmp(currentPtr -> username, username) == 0)
     {
         previousPtr -> nextPtr = currentPtr -> nextPtr;
         free(currentPtr);
+        puts("User deleted.");
     }
-    else
-    {
-        puts("Error username entered! ");
-        return;
-    }
+
+
 
 }
 
