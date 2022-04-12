@@ -49,6 +49,6 @@ void createUsers(twitter * twitter_system);
 void postTweets(twitter * twitter_system);
 void followUsers(twitter * twitter_system);
 void unfollowUsers(twitter * twitter_system);
-void deleteUser(twitter * twitter_system);
+void deleteUser(userPtr* userList);
 void endTurn(twitter * twitter_system);
-void endTwitter(twitter * twitter_system);
+void endTwitter();

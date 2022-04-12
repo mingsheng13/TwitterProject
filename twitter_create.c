@@ -41,13 +41,13 @@ void create_twitter_system(twitter * twitter_system){
                 unfollowUsers(twitter_system);
                 break;
             case 4:
-                deleteUser(twitter_system);
+                deleteUser(&twitter_system -> username);
                 break;
             case 5:
                 endTurn(twitter_system);
                 break;
             case 6:
-                endTwitter(twitter_system);
+                endTwitter();
                 break;
             default:
                 puts("error");
@@ -73,16 +73,6 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 
     printUsers(twitter_system -> username);
 
-//    strcpy(twitter_system->users[twitter_system->num_users].username, username);
-//    twitter_system-> users[twitter_system->num_users].num_followers = 0;
-//    twitter_system->users[twitter_system->num_users].num_following = 0;
-//    twitter_system->num_users += 1;     //total number of user increase by 1.
-//
-//    //This is a print to show all the information when creating the users
-//    for(int i =0; i < twitter_system->num_users; i++){
-//        user usr = twitter_system->users[i];
-//        printf("User: %s; Followers: %d; Following: %d\n",usr.username, usr.num_followers, usr.num_followers );
-//    }
     puts("");
 }
 
@@ -101,16 +91,54 @@ void unfollowUsers(twitter* twitter_system){
     printf("Test for unfollowUsers success.\n");
 }
 
-void deleteUser(twitter* twitter_system){
-    printf("Test for deleteUSer success.\n");
+void deleteUser(userPtr* userList){
+    //link the previous node to next node and use free()
+    char username[USR_LENGTH];
+    userPtr previousPtr = NULL;
+    userPtr currentPtr = *userList;
+
+    if(currentPtr == NULL)
+    {
+        puts("User list is empty!");
+        return;
+    }
+
+    printUsers(*userList);
+    printf("Enter the username that you want to delete:");
+    fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
+
+    if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
+        username[strlen(username)-1] = '\0';
+
+    while(currentPtr != NULL && strcmp(currentPtr -> username, username) != 0)      //loop through the list and
+    {                                                                               //stop if the username is found
+        previousPtr = currentPtr;
+        currentPtr = currentPtr -> nextPtr;
+    }
+    if(previousPtr == NULL)
+    {
+        *userList = currentPtr -> nextPtr;
+    }
+    else if(strcmp(currentPtr -> username, username) == 0)
+    {
+        previousPtr -> nextPtr = currentPtr -> nextPtr;
+        free(currentPtr);
+    }
+    else
+    {
+        puts("Error username entered! ");
+        return;
+    }
+
 }
 
 void endTurn(twitter* twitter_system){
     printf("Test for endTurn success.\n");
 }
 
-void endTwitter(twitter* twitter_system){
-    printf("Test for endTwitter success.\n");
+void endTwitter(){
+    printf("Thank you for using.\n");
+    exit(0);
 }
 
 void printKeyInfo(){
@@ -134,12 +162,11 @@ void printUsers(userPtr userList)       //print all users in the linked list
     {
         while(userList != NULL)     //loop through every user in the list
         {
-            printf("User: %s; Followers: %d; Following: %d\n",userList -> username, userList -> num_followers, userList -> num_followers );
+            printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
             userList = userList -> nextPtr;
         }
     }
 }
-
 
 void insertUser(userPtr* userList, char username[USR_LENGTH])
 {
@@ -160,7 +187,7 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
     {
         if(strcmp(currentNode -> username, username) == 0)      //same username inputted
         {
-            printf("Username already existed, please try again.");
+            printf("Username already existed, please try again.\n");
             return;
         }
         previousNode = currentNode;
