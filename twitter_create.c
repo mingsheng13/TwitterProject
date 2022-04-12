@@ -77,17 +77,18 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 }
 
 void postTweets(twitter* twitter_system){
-    //printf("Test for postTweets success.\n");
-    //tweetPtr currentNode = *tweet;
     char tweetInput[TWEET_LENGTH];
     puts("Enter your tweet: ");
     fgets(tweetInput,TWEET_LENGTH,stdin);
 
-    insertTweet(&twitter_system -> news_feed,tweetInput,&twitter_system -> num_tweets ,twitter_system -> username);
+    if(tweetInput[strlen(tweetInput)-1] =='\n')     //replace the newline char with null char.
+        tweetInput[strlen(tweetInput)-1] = '\0';
+
+    //insertTweet(&twitter_system -> news_feed,tweetInput,&twitter_system -> num_tweets ,twitter_system -> username);
 
     twitter_system -> num_tweets += 1;
 
-    printTweets(twitter_system -> news_feed,twitter_system -> username);
+    //printTweets(twitter_system -> news_feed,twitter_system -> username);
 }
 
 void followUsers(twitter* twitter_system){
