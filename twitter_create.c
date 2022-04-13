@@ -134,6 +134,9 @@ void postTweets(twitter* twitter_system){
 
     twitter_system -> num_tweets += 1;
 
+
+    puts("Tweet posted successfully!\n");
+
     //printTweets(twitter_system -> news_feed,twitter_system -> username);
 }
 
@@ -147,7 +150,7 @@ void followUsers(twitter* twitter_system){
     }
     char followTarget[USR_LENGTH];
     puts("Please print the user you want to follow:\n");
-    printUsers(twitter_system -> username);
+//    printUsers(twitter_system -> username);
     fgets(followTarget,USR_LENGTH,stdin);
 
     if(followTarget[strlen(followTarget)-1] =='\n')     //replace the newline char with null char.
@@ -336,5 +339,28 @@ void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char auth
 }
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
 {
-    //to be done
+//    if(userList == NULL)        //the list is empty.
+//    {
+//        puts("No user available");
+//        return 0;
+//    }
+//    else
+//    {
+//        while(userList != NULL)     //loop through every user in the list
+//        {
+//            printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+//            userList = userList -> nextPtr;
+//        }
+//        return 1;
+//    }
+
+    if(tweetList == NULL){
+        puts("No tweets available!\n");
+        return;
+    }
+    else{
+        while (tweetList != NULL){
+            puts("test for printTweet success!\n");
+        }
+    }
 }
