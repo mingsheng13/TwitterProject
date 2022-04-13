@@ -34,10 +34,10 @@ void create_twitter_system(twitter * twitter_system){
                 createUsers(twitter_system);
                 break;
             case 1:
-                postTweets(twitter_system);
+                selectUser(twitter_system);
                 break;
             case 2:
-                selectUser(twitter_system);
+                postTweets(twitter_system);
                 break;
             case 3:
                 followUsers(twitter_system);
@@ -138,10 +138,45 @@ void postTweets(twitter* twitter_system){
 }
 
 void followUsers(twitter* twitter_system){
-    printf("Test for followUsers success.\n");
+    userPtr userList = twitter_system -> username;
+
+    if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
+    {
+        puts("Please select a user before posting tweet");
+        return;
+    }
+    char followTarget[USR_LENGTH];
+    puts("Please print the user you want to follow:\n");
+    printUsers(twitter_system -> username);
+    fgets(followTarget,USR_LENGTH,stdin);
+
+    if(followTarget[strlen(followTarget)-1] =='\n')     //replace the newline char with null char.
+        followTarget [strlen(followTarget)-1] = '\0';
+
+    while (userList != NULL){
+        if(strcmp(followTarget,userList -> username) == 0){
+            printf("Found the user!\n");
+            strcpy(twitter_system -> currentUser,userList -> username);
+            return;
+        }
+        userList = userList -> nextPtr;
+    }
+    if(userList == NULL)
+    {
+        if(strcmp(twitter_system -> currentUser, "Not Selected") == 0){
+            puts("User not found!");
+            return;
+        }
+    }
+//    printf("Test for followUsers success.\n");
 }
 
 void unfollowUsers(twitter* twitter_system){
+    if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
+    {
+        puts("Please select a user before posting tweet");
+        return;
+    }
     printf("Test for unfollowUsers success.\n");
 }
 
@@ -207,10 +242,10 @@ void endTwitter(){
 }
 
 void printKeyInfo(){
-    printf("Enter the number between 0 and 6:\n");
+    printf("\n\nEnter the number between 0 and 6:\n");
     printf("Enter 0: Create a user\n");
-    printf("Enter 1: Post tweets\n");
-    printf("Enter 2: Select a user\n");
+    printf("Enter 1: Select a user\n");
+    printf("Enter 2: Post tweets\n");
     printf("Enter 3: Follow users\n");
     printf("Enter 4: Unfollow users\n");
     printf("Enter 5: delete the user\n");
