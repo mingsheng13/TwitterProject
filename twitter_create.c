@@ -130,14 +130,14 @@ void postTweets(twitter* twitter_system){
     if(tweetInput[strlen(tweetInput)-1] =='\n')     //replace the newline char with null char.
         tweetInput[strlen(tweetInput)-1] = '\0';
 
-    //insertTweet(&twitter_system -> news_feed,tweetInput,&twitter_system -> num_tweets ,twitter_system -> username);
+    insertTweet(&twitter_system -> news_feed,tweetInput,&twitter_system -> num_tweets ,twitter_system -> currentUser);
 
     twitter_system -> num_tweets += 1;
 
 
     puts("Tweet posted successfully!\n");
 
-    //printTweets(twitter_system -> news_feed,twitter_system -> username);
+    printTweets(twitter_system -> news_feed,twitter_system -> username);
 }
 
 void followUsers(twitter* twitter_system){
@@ -231,6 +231,7 @@ void deleteUser(twitter* twitter_system){
         puts("User deleted.");
     }
 
+    //delete user's tweet
 
 
 }
@@ -312,55 +313,39 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
 
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
 {
-    tweetPtr previousNode = NULL;
-    tweetPtr currentNode = *tweetList;
-    tweetPtr newTweetNode = (tweetPtr)malloc(sizeof(tweet));
-    strcpy(newTweetNode -> msg, msg);
-    newTweetNode -> id = *id;
-    *id = *id +1;       //change the total number of tweets.
-    strcpy(newTweetNode -> user, author);
-    newTweetNode -> nextPtr = NULL;
+    //implement using stack.(first in last out)
 
-    while(currentNode != NULL)
-    {
-        previousNode = currentNode;
-        currentNode = currentNode -> nextPtr;
-    }
+    tweetPtr newStack = (tweetPtr)malloc(sizeof(tweet));
+    newStack -> id = *id;
+    *id = *id + 1;
+    strcpy(newStack -> user, author);
+    strcpy(newStack -> msg, msg);
 
-    if(previousNode == NULL)
+    tweetPtr currentStack = *tweetList;
+    if(currentStack == NULL)        //first one in the list
     {
-        *tweetList = newTweetNode;
+        newStack -> nextPtr = NULL;
+        *tweetList = newStack;
+        return;
     }
     else
     {
-        previousNode -> nextPtr = newTweetNode;
+        newStack -> nextPtr = currentStack;
+        *tweetList = newStack;
     }
 
 }
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
 {
-//    if(userList == NULL)        //the list is empty.
-//    {
-//        puts("No user available");
-//        return 0;
-//    }
-//    else
-//    {
-//        while(userList != NULL)     //loop through every user in the list
-//        {
-//            printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
-//            userList = userList -> nextPtr;
-//        }
-//        return 1;
-//    }
-
+    //check for following's tweet.strcmp viewingUser's following with
     if(tweetList == NULL){
         puts("No tweets available!\n");
         return;
     }
     else{
         while (tweetList != NULL){
-            puts("test for printTweet success!\n");
+            printf("id: %d Author: %s\n%s\n",tweetList -> id, tweetList -> user, tweetList -> msg);
+            tweetList = tweetList -> nextPtr;
         }
     }
 }
