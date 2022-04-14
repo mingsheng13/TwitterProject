@@ -40,18 +40,21 @@ void create_twitter_system(twitter * twitter_system){
                 postTweets(twitter_system);
                 break;
             case 3:
-                followUsers(twitter_system);
+                getNewsFeed(twitter_system);
                 break;
             case 4:
-                unfollowUsers(twitter_system);
+                followUsers(twitter_system);
                 break;
             case 5:
-                deleteUser(twitter_system);
+                unfollowUsers(twitter_system);
                 break;
             case 6:
-                endTurn(twitter_system);
+                deleteUser(twitter_system);
                 break;
             case 7:
+                endTurn(twitter_system);
+                break;
+            case 8:
                 endTwitter();
                 break;
             default:
@@ -137,7 +140,24 @@ void postTweets(twitter* twitter_system){
 
     puts("Tweet posted successfully!\n");
 
-    printTweets(twitter_system -> news_feed,twitter_system -> username);
+    printTweets(twitter_system -> news_feed,twitter_system -> currentUser);
+}
+
+void getNewsFeed(twitter* twitter_system)
+{
+    char* currentUser = twitter_system -> currentUser;
+    tweetPtr tweetList = twitter_system -> news_feed;
+    //check for following's tweet.strcmp viewingUser's following with
+    if(tweetList == NULL){
+        puts("No tweets available!\n");
+        return;
+    }
+    else{
+        while (tweetList != NULL)){     // && strcmp(tweetList -> user, <<to be finished
+            printf("id: %d Author: %s\n%s\n",tweetList -> id, tweetList -> user, tweetList -> msg);
+            tweetList = tweetList -> nextPtr;
+        }
+    }
 }
 
 void followUsers(twitter* twitter_system){
@@ -171,7 +191,6 @@ void followUsers(twitter* twitter_system){
             return;
         }
     }
-//    printf("Test for followUsers success.\n");
 }
 
 void unfollowUsers(twitter* twitter_system){
@@ -234,10 +253,12 @@ void deleteUser(twitter* twitter_system){
     //delete user's tweet
 
 
+
 }
 
 void endTurn(twitter* twitter_system){
-    printf("Test for endTurn success.\n");
+    printf("End turn. Please select another user.\n");
+    strcpy(twitter_system -> currentUser, "Not Selected");
 }
 
 void endTwitter(){
@@ -250,11 +271,12 @@ void printKeyInfo(){
     printf("Enter 0: Create a user\n");
     printf("Enter 1: Select a user\n");
     printf("Enter 2: Post tweets\n");
-    printf("Enter 3: Follow users\n");
-    printf("Enter 4: Unfollow users\n");
-    printf("Enter 5: delete the user\n");
-    printf("Enter 6: End this turn\n");
-    printf("Enter 7: End the Twitter system\n");
+    printf("Enter 3: News feed\n");
+    printf("Enter 4: Follow users\n");
+    printf("Enter 5: Unfollow users\n");
+    printf("Enter 6: delete the user\n");
+    printf("Enter 7: End this turn\n");
+    printf("Enter 8: End the Twitter system\n");
 }
 
 int printUsers(userPtr userList)       //print all users in the linked list
