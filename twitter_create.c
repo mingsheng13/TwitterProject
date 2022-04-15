@@ -11,6 +11,7 @@
 int printUsers(twitter twitter_system, int mode);       //print all users in the linked list
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
 void insertUser(userPtr* userList, char username[USR_LENGTH]);
+void insertFollower(userFollowPtr* followerList,char userName[USR_LENGTH], char followerName[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
 
 void printKeyInfo();
@@ -159,6 +160,8 @@ void getNewsFeed(twitter* twitter_system)
 }
 
 void followUsers(twitter* twitter_system){
+
+
     userPtr userList = twitter_system -> username;
 
     if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
@@ -173,15 +176,15 @@ void followUsers(twitter* twitter_system){
 
     if(followTarget[strlen(followTarget)-1] =='\n')     //replace the newline char with null char.
         followTarget [strlen(followTarget)-1] = '\0';
-
-    while (userList != NULL){
-        if(strcmp(followTarget,userList -> username) == 0){
-            //strcpy(twitter_system -> currentUser,userList -> username);
-            printf("Now following %s!\n", followTarget);
-            return;
-        }
-        userList = userList -> nextPtr;
-    }
+    void insertFollower( userFollowPtr ,&twitter_system -> username, followTarget);
+//    while (userList != NULL){
+//        if(strcmp(followTarget,userList -> username) == 0){
+//            //strcpy(twitter_system -> currentUser,userList -> username);
+//            printf("Now following %s!\n", followTarget);
+//            return;
+//        }
+//        userList = userList -> nextPtr;
+//    }
     if(userList == NULL)
     {
         if(strcmp(twitter_system -> currentUser, "Not Selected") == 0){
@@ -344,6 +347,41 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
     if(previousNode == NULL)        //first one in the list.
     {
         *userList = newNode;
+    }
+    else
+    {
+        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
+    }
+}
+
+void insertFollower(userFollowPtr* followerList,char userName[USR_LENGTH], char followerName[USR_LENGTH]){
+    userFollowPtr previousNode = NULL;
+    userFollowPtr currentNode = *followerList;
+    userFollowPtr newNode = (userFollowPtr) malloc(sizeof(userFollow));
+
+    if(newNode == NULL)
+    {
+        printf("error allocating memory");
+        exit(0);
+    }
+
+    strcpy(newNode -> followerName, followerName);
+    newNode -> nextPtr = NULL;
+
+    while(currentNode != NULL)      //loop to the last place in the list.
+    {
+        if(strcmp(currentNode -> followerName, followerName) == 0)      //same username inputted
+        {
+            printf("You have already folow this user, please try again.\n");
+            return;
+        }
+        previousNode = currentNode;
+        currentNode = currentNode -> nextPtr;
+    }
+
+    if(previousNode == NULL)        //first one in the list.
+    {
+        *followerList = newNode;
     }
     else
     {
