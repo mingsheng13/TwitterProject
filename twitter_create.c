@@ -8,7 +8,7 @@
 #include "twitter_create.h"
 
 
-int printUsers(userPtr userList);       //print all users in the linked list
+int printUsers(twitter twitter_system, int mode);       //print all users in the linked list
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
 void insertUser(userPtr* userList, char username[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
@@ -80,7 +80,7 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 
     twitter_system -> num_users += 1;
 
-    printUsers(twitter_system -> username);
+    printUsers(*twitter_system, 0);
 
 
     puts("==============================================");
@@ -89,10 +89,9 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 void selectUser(twitter * twitter_system){
     userPtr userList = twitter_system -> username;
     char user[USR_LENGTH];
-    if(printUsers(userList) == 0)
-    {
+    if(printUsers(*twitter_system, 0) == 0)
         return;
-    }
+
     printf("Please enter a user name:\n");
     fgets(user, USR_LENGTH, stdin);     //use fgets to scan string
 
@@ -153,7 +152,7 @@ void getNewsFeed(twitter* twitter_system)
         return;
     }
     else{
-        while (tweetList != NULL)){     // && strcmp(tweetList -> user, <<to be finished
+        while (tweetList != NULL){     // && strcmp(tweetList -> user, <<to be finished
             printf("id: %d Author: %s\n%s\n",tweetList -> id, tweetList -> user, tweetList -> msg);
             tweetList = tweetList -> nextPtr;
         }
@@ -165,12 +164,12 @@ void followUsers(twitter* twitter_system){
 
     if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
     {
-        puts("Please select a user before posting tweet");
+        puts("Please select a user before following people.");
         return;
     }
     char followTarget[USR_LENGTH];
-    puts("Please print the user you want to follow:\n");
-//    printUsers(twitter_system -> username);
+    puts("Please enter the user you want to follow:\n");
+    printUsers(*twitter_system, 1);
     fgets(followTarget,USR_LENGTH,stdin);
 
     if(followTarget[strlen(followTarget)-1] =='\n')     //replace the newline char with null char.
@@ -178,8 +177,8 @@ void followUsers(twitter* twitter_system){
 
     while (userList != NULL){
         if(strcmp(followTarget,userList -> username) == 0){
-            printf("Found the user!\n");
-            strcpy(twitter_system -> currentUser,userList -> username);
+            //strcpy(twitter_system -> currentUser,userList -> username);
+            printf("Now following %s!\n", followTarget);
             return;
         }
         userList = userList -> nextPtr;
@@ -214,7 +213,7 @@ void deleteUser(twitter* twitter_system){
         return;
     }
 
-    printUsers(twitter_system -> username);
+    printUsers(*twitter_system, 0);
     printf("Enter the username that you want to delete:");
     fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
 
@@ -279,8 +278,9 @@ void printKeyInfo(){
     printf("Enter 8: End the Twitter system\n");
 }
 
-int printUsers(userPtr userList)       //print all users in the linked list
+int printUsers(twitter twitter_system, int mode)       //print all users in the linked list
 {
+    userPtr userList = twitter_system.username;
     if(userList == NULL)        //the list is empty.
     {
         puts("No user available");
@@ -288,12 +288,31 @@ int printUsers(userPtr userList)       //print all users in the linked list
     }
     else
     {
-        while(userList != NULL)     //loop through every user in the list
+        if(mode == 0)
         {
-            printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
-            userList = userList -> nextPtr;
+            while(userList != NULL)     //loop through every user in the list
+            {
+                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                userList = userList -> nextPtr;
+            }
+            return 1;
         }
-        return 1;
+        else if(mode == 1)      //print user without current user.
+        {
+            while(userList != NULL)
+            {
+                if(strcmp(twitter_system.currentUser, userList -> username)==0)
+                {
+                    userList = userList -> nextPtr;     //skip the current user
+                    continue;
+                }
+
+                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                userList = userList -> nextPtr;
+            }
+            return 1;
+        }
+
     }
 }
 
