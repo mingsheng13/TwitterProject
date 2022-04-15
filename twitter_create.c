@@ -134,7 +134,6 @@ void postTweets(twitter* twitter_system){
 
     insertTweet(&twitter_system -> news_feed,tweetInput,&twitter_system -> num_tweets ,twitter_system -> currentUser);
 
-    twitter_system -> num_tweets += 1;
 
 
     puts("Tweet posted successfully!\n");
