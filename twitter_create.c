@@ -285,7 +285,7 @@ void printKeyInfo(){
 
 int printUsers(twitter twitter_system, int mode)       //print all users in the linked list
 {
-    userFollowPtr currentFollowerList;
+    userFollowPtr currentFollowingList;
     userPtr userList = twitter_system.username;
     if(userList == NULL)        //the list is empty.
     {
@@ -307,8 +307,11 @@ int printUsers(twitter twitter_system, int mode)       //print all users in the 
         {
             while(userList != NULL)
             {
-//                while()
-
+                if(strcmp(userList -> username, twitter_system . currentUser) == 0 )
+                {
+                    userList = userList -> nextPtr;
+                    continue;
+                }
                 printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
                 userList = userList -> nextPtr;
             }
@@ -316,26 +319,28 @@ int printUsers(twitter twitter_system, int mode)       //print all users in the 
         }
         else if(mode == 2)      //print user without current user and following user.
         {
-//            while(userList != NULL)
-//            {
-//                if(strcmp(twitter_system.currentUser, userList -> username)==0)
-//                {
-//                    currentFollowerList = userList ->following;
-//                }
-//            }
             while(userList != NULL)
             {
                 if(strcmp(twitter_system.currentUser, userList -> username)==0)
                 {
-                    currentFollowerList = userList -> following;
-                    userList = userList -> nextPtr;     //skip the current user
-                    continue;
-                }   //to be continued
-//                while(currentFollowerList != NULL)
-//                {
-//                    if()
-//                }
-//                userList = userList -> nextPtr;
+                    currentFollowingList = userList ->following;     //grab the followerList into a variable
+                    break;
+                }
+                userList = userList -> nextPtr;
+            }
+            while(userList != NULL)
+            {
+                while(currentFollowingList != NULL)
+                {
+                    if(strcmp(userList -> username, currentFollowingList -> followerName)==0)
+                    {
+                        currentFollowingList = currentFollowingList -> nextPtr;     //skip followed user
+                        continue;
+                    }
+                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                    currentFollowingList = currentFollowingList -> nextPtr;
+                }
+                userList = userList -> nextPtr;
             }
         }
 

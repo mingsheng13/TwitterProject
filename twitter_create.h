@@ -25,7 +25,6 @@ typedef struct tweet{
 typedef struct tweet * tweetPtr;
 
 typedef struct userFollow{
-    char userName [USR_LENGTH];
     char followerName[USR_LENGTH];
     struct userFollow* nextPtr;
 }userFollow;
@@ -37,7 +36,7 @@ typedef struct user{
 //    char followers[MAX_FOLLOWERS];
     userFollowPtr following;     //following list
     int num_followers;
-    char following[MAX_FOLLOWING];
+    char follower[MAX_FOLLOWING];
     int num_following;
     struct user* nextPtr;
 
