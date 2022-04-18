@@ -33,7 +33,6 @@ typedef struct userFollow * userFollowPtr;
 
 typedef struct user{
     char username[USR_LENGTH];
-//    char followers[MAX_FOLLOWERS];
     userFollowPtr following;     //following list
     int num_followers;
     userFollowPtr follower;
