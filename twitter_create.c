@@ -80,7 +80,6 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
         username[strlen(username)-1] = '\0';
 
     insertUser(&twitter_system -> username, username);      //insert username into linkedList
-
     twitter_system -> num_users += 1;
 
     printUsers(*twitter_system, 0);
@@ -187,20 +186,29 @@ void followUsers(twitter* twitter_system)
     if (followTarget[strlen(followTarget) - 1] == '\n')     //replace the newline char with null char.
         followTarget[strlen(followTarget) - 1] = '\0';
 
+//    while(userList != NULL)
+//    {
+//        if(strcmp(userList -> username, followTarget) ==0)
+//        {
+//
+//        }
+//        userList = userList -> nextPtr;
+//    }
+    //following is not updated because this is passed by value not reference.
     while(userList != NULL)
     {
         if(strcmp(userList -> username, twitter_system -> currentUser)== 0)     //current user
         {
-            followingList = &(userList -> following);
-            userList -> num_following += 1;     //current user's following +1
-            insertFollow(followingList, followTarget);      //insert follow target's name to current user's following list.
-            y = 1;
+            insertFollow(&(userList -> following), followTarget);      //insert follow target's name to current user's following list.
+            (userList -> num_following) += 1;     //current user's following +1
+            puts("added");
         }
         if(strcmp(userList -> username, followTarget)==0)       //follow target
         {
-            followerList = &(userList -> follower);
-            userList -> num_followers += 1;     //follow target's follower +1
-            insertFollow(followerList, twitter_system -> currentUser);
+            insertFollow(&(userList -> follower), twitter_system -> currentUser);
+            (userList -> num_followers) += 1;     //this increase both follower and following(no idea why) //follow target's follower +1
+            puts("added2");
+            y = 1;
             //insert current user's name into follow target's follower list.
         }
         userList = userList -> nextPtr;
@@ -347,11 +355,17 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
              * */
             while(userList != NULL)
             {
+                if(currentFollowingList == NULL)
+                {
+                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                    y = 1;
+                }
                 while(currentFollowingList != NULL)
                 {
                     if(strcmp(userList -> username, currentFollowingList -> followerName)==0)
                     {
                         currentFollowingList = currentFollowingList -> nextPtr;     //skip followed user
+                        puts("debug");
                         continue;
                     }
                     printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
@@ -378,7 +392,7 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
     if(newNode == NULL)
     {
         printf("error allocating memory");
-        exit(0);
+        exit(1);
     }
     strcpy(newNode -> username, username);
     newNode -> num_followers = 0;
