@@ -178,6 +178,7 @@ void followUsers(twitter* twitter_system)
     char followTarget[USR_LENGTH];
     if(printUsers(*twitter_system, 2)== 0)     //use mode 2 to show users that are not being followed by current user
     {
+        puts("The code shouls be finished here.");
         return;
     }
     puts("Please enter the user you want to follow:");
