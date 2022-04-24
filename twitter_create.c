@@ -27,7 +27,6 @@ void create_twitter_system(twitter * twitter_system){
     size_t choice;
     printf("? ");
     scanf("%zu", &choice);
-//    fflush(stdin);
     getchar();      //clear input buffer
 
     while (choice >= 0 && choice <= 8){
@@ -350,20 +349,19 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
             {
                 for(int i = 0; i < following; i++)
                 {
-                    if((strcmp(followList[i], userList -> username) != 0) && (strcmp(userList -> username, twitter_system.currentUser) != 0))
+                    if((strcmp(followList[i], userList -> username) == 0) || (strcmp(userList -> username, twitter_system.currentUser) == 0))
                     {
-                        printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following);
-                        y = 1;
                         break;
                     }
+                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following);
                 }
                 userList = userList -> nextPtr;
             }
-            if(y == 0)
-            {
-                puts("No user to show");
-                return 0;
-            }
+//            if(y == 0)
+//            {
+//                puts("No user to show");
+//                return 0;
+//            }
         }
         return 1;
     }
@@ -483,28 +481,28 @@ void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
     }
 }
 
-char** getFollowList(twitter twitter_system, int * following)
+char** getFollowList(twitter twitter_system, int * following)       //function for returning current user's following list
 {
     userPtr userList = twitter_system.username;
     while(userList != NULL)
     {
         if(strcmp(twitter_system.currentUser, userList -> username)==0)
         {
-            char **arr = (char**)malloc(userList -> num_following * sizeof(char*));
+            char **arr = (char**)malloc(userList -> num_following * sizeof(char*));     //allocate rows
             for(int i = 0; i < userList -> num_following; i++)
             {
-                arr[i] = (char*)malloc(USR_LENGTH * sizeof(char));
+                arr[i] = (char*)malloc(USR_LENGTH * sizeof(char));      //allocate columns
             }
             for(int i = 0; i < userList -> num_following; i++)
             {
-                strcpy(arr[i], userList -> following[i]);
+                strcpy(arr[i], userList -> following[i]);       //put the list into new array
             }
             *following = userList -> num_following;
 
             if(userList -> num_following == 0)
                 return arr = NULL;
 
-            return arr;
+            return arr;     //return the array
         }
         userList = userList -> nextPtr;
     }
