@@ -12,7 +12,7 @@ void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
 void insertUser(userPtr* userList, char username[USR_LENGTH]);
 void insertFollow(userFollowPtr* followList, char followName[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
-void getFollowList(twitter twitter_system, userFollowPtr* currentFollowingList);
+char** getFollowList(twitter twitter_system, int *following);
 
 void printKeyInfo();
 
@@ -140,7 +140,8 @@ void postTweets(twitter* twitter_system){
 
 void getNewsFeed(twitter* twitter_system){      //done
     tweetPtr tweetList = twitter_system -> news_feed;
-    userFollowPtr followingList;
+    char** followingList;
+    int following;
     if(tweetList == NULL)
     {
         puts("No tweets available!\n");
@@ -148,28 +149,30 @@ void getNewsFeed(twitter* twitter_system){      //done
     }
     else
     {
-        getFollowList(*twitter_system, &followingList);
-        while(followingList != NULL)
-        {
-            while(tweetList != NULL)
-            {
-                if(strcmp(followingList->followerName, tweetList -> user)==0 || strcmp(tweetList -> user, twitter_system -> currentUser)==0)
-                {
-                    printf("id: %d Author: %s\n%s\n",tweetList -> id, tweetList -> user, tweetList -> msg);
-                }
-                tweetList = tweetList -> nextPtr;
-            }
-            followingList = followingList -> nextPtr;
-        }
+        /*
+         * problem here
+         * need to loop through linked list over and over again
+         * not sure how to do that.
+         */
+//        followingList = getFollowList(*twitter_system, &following);
+//        for(int i = 0; i < following; i++)
+//        {
+//            while(tweetList != NULL)
+//            {
+//                if(strcmp(followingList->followName, tweetList -> user) == 0 || strcmp(tweetList -> user, twitter_system -> currentUser) == 0)
+//                {
+//                    printf("id: %d Author: %s\n%s\n",tweetList -> id, tweetList -> user, tweetList -> msg);
+//                }
+//                tweetList = tweetList -> nextPtr;
+//            }
+//            followingList = followingList -> nextPtr;
+//        }
     }
 }
 // 关注用户出现了一些问题，follower / following 存在bug
 void followUsers(twitter* twitter_system)
 {
-    int y = 0;
-    userPtr* userList = &(twitter_system->username);
-    userFollowPtr* followingList;
-    userFollowPtr* followerList;
+    userPtr user = twitter_system -> username;
 
     if (strcmp(twitter_system->currentUser, "Not Selected") == 0) {     //select a user before following
         puts("Please select a user before following people.");
@@ -178,7 +181,7 @@ void followUsers(twitter* twitter_system)
     char followTarget[USR_LENGTH];
     if(printUsers(*twitter_system, 2)== 0)     //use mode 2 to show users that are not being followed by current user
     {
-        puts("The code shouls be finished here.");
+        puts("No one to follow");
         return;
     }
     puts("Please enter the user you want to follow:");
@@ -187,51 +190,20 @@ void followUsers(twitter* twitter_system)
     if (followTarget[strlen(followTarget) - 1] == '\n')     //replace the newline char with null char.
         followTarget[strlen(followTarget) - 1] = '\0';
 
-    while(twitter_system -> username != NULL)
+    while(user != NULL)
     {
-        if(strcmp(twitter_system -> username -> username, twitter_system -> currentUser)==0)
+        if(strcmp(user -> username, twitter_system -> currentUser) == 0)
         {
-            insertFollow(&(twitter_system -> username -> following), followTarget);
-            (twitter_system -> username -> num_following) += 1;
-
+            strcpy(user -> following[user -> num_following], followTarget);
+            user -> num_following += 1;
         }
-        if(strcmp(twitter_system -> username -> username, followTarget)==0)
+        if(strcmp(user -> username, followTarget) == 0)
         {
-            insertFollow(&(twitter_system -> username -> follower), twitter_system -> currentUser);
-            (twitter_system -> username -> num_followers) += 1;
+            strcpy(user -> follower[user -> num_followers], twitter_system -> currentUser);
+            user -> num_followers += 1;
         }
-        twitter_system -> username = twitter_system -> username -> nextPtr;
+        user = user -> nextPtr;
     }
-
-    twitter_system -> username = *userList;
-
-    //following is not updated because this is passed by value not reference.
-//    while(userList != NULL)
-//    {
-//        if(strcmp(userList -> username, twitter_system -> currentUser)== 0)     //current user
-//        {
-//            insertFollow(&(userList -> following), followTarget);      //insert follow target's name to current user's following list.
-//            (userList -> num_following) += 1;     //current user's following +1
-//            puts("added");
-//        }
-//        if(strcmp(userList -> username, followTarget)==0)       //follow target
-//        {
-//            insertFollow(&(userList -> follower), twitter_system -> currentUser);
-//            (userList -> num_followers) += 1;     //this increase both follower and following(no idea why) //follow target's follower +1
-//            puts("added2");
-//            y = 1;
-//            //insert current user's name into follow target's follower list.
-//        }
-//        userList = userList -> nextPtr;
-//    }
-
-
-//
-//    if(y == 0)
-//    {
-//        puts("Error username inputted.");
-//        return;
-//    }
 }
 
 void unfollowUsers(twitter* twitter_system){
@@ -321,8 +293,8 @@ void printKeyInfo(){
 }
 
 int printUsers(twitter twitter_system, int mode){       //print all users in the linked list
-    userFollowPtr currentFollowingList;
     userPtr userList = twitter_system.username;
+
     if(userList == NULL)        //the list is empty.
     {
         puts("No user available");
@@ -334,7 +306,7 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
         {
             while(userList != NULL)     //loop through every user in the list
             {
-                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following );
                 userList = userList -> nextPtr;
             }
         }
@@ -348,7 +320,7 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
                     userList = userList -> nextPtr;
                     continue;
                 }
-                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
+                printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following );
                 y = 1;
                 userList = userList -> nextPtr;
             }
@@ -361,30 +333,29 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
         else if(mode == 2)      //print user without current user and following user.
         {
             int y = 0;
-            getFollowList(twitter_system, &currentFollowingList);    //feed currentFollowingList with the currently selected user's following.
+            char **followList;
+            int following;
+            followList = getFollowList(twitter_system, &following);
+
+            if(followList == NULL)
+            {
+                printUsers(twitter_system, 1);
+                return 1;
+            }
             /*
-             *
-             * problem here
-             *
-             * */
+             * Problem here
+             * username still showing even after following user.
+             */
             while(userList != NULL)
             {
-                if(currentFollowingList == NULL)
+                for(int i = 0; i < following; i++)
                 {
-                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
-                    y = 1;
-                }
-                while(currentFollowingList != NULL)
-                {
-                    if(strcmp(userList -> username, currentFollowingList -> followerName)==0)
+                    if((strcmp(followList[i], userList -> username) != 0) && (strcmp(userList -> username, twitter_system.currentUser) != 0))
                     {
-                        currentFollowingList = currentFollowingList -> nextPtr;     //skip followed user
-                        puts("debug");
-                        continue;
+                        printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following);
+                        y = 1;
+                        break;
                     }
-                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_followers );
-                    y = 1;
-                    currentFollowingList = currentFollowingList -> nextPtr;
                 }
                 userList = userList -> nextPtr;
             }
@@ -434,40 +405,40 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
     }
 }
 
-void insertFollow(userFollowPtr* followList, char followName[USR_LENGTH]){
-    userFollowPtr previousNode = NULL;
-    userFollowPtr currentNode = *followList;
-    userFollowPtr newNode = (userFollowPtr) malloc(sizeof(userFollow));
-
-    if(newNode == NULL)
-    {
-        printf("error allocating memory");
-        exit(0);
-    }
-
-    strcpy(newNode -> followerName, followName);
-    newNode -> nextPtr = NULL;
-
-    while(currentNode != NULL)      //loop to the last place in the list.
-    {
-        if(strcmp(currentNode -> followerName, followName) == 0)      //same username inputted
-        {
-            printf("You have already follow this user, please try again.\n");
-            return;
-        }
-        previousNode = currentNode;
-        currentNode = currentNode -> nextPtr;       //loop to the next one
-    }
-
-    if(previousNode == NULL)        //first one in the list.
-    {
-        *followList = newNode;
-    }
-    else
-    {
-        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
-    }
-}
+//void insertFollow(userFollowPtr* followList, char followName[USR_LENGTH]){
+//    userFollowPtr previousNode = NULL;
+//    userFollowPtr currentNode = *followList;
+//    userFollowPtr newNode = (userFollowPtr) malloc(sizeof(userFollow));
+//
+//    if(newNode == NULL)
+//    {
+//        printf("error allocating memory");
+//        exit(0);
+//    }
+//
+//    strcpy(newNode -> followName, followName);
+//    newNode -> nextPtr = NULL;
+//
+//    while(currentNode != NULL)      //loop to the last place in the list.
+//    {
+//        if(strcmp(currentNode -> followName, followName) == 0)      //same username inputted
+//        {
+//            printf("You have already follow this user, please try again.\n");
+//            return;
+//        }
+//        previousNode = currentNode;
+//        currentNode = currentNode -> nextPtr;       //loop to the next one
+//    }
+//
+//    if(previousNode == NULL)        //first one in the list.
+//    {
+//        *followList = newNode;
+//    }
+//    else
+//    {
+//        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
+//    }
+//}
 
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
 {
@@ -512,15 +483,28 @@ void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH])
     }
 }
 
-void getFollowList(twitter twitter_system, userFollowPtr* currentFollowingList)
+char** getFollowList(twitter twitter_system, int * following)
 {
     userPtr userList = twitter_system.username;
     while(userList != NULL)
     {
         if(strcmp(twitter_system.currentUser, userList -> username)==0)
         {
-            *currentFollowingList = userList ->following;     //grab the followerList into a variable
-            return;
+            char **arr = (char**)malloc(userList -> num_following * sizeof(char*));
+            for(int i = 0; i < userList -> num_following; i++)
+            {
+                arr[i] = (char*)malloc(USR_LENGTH * sizeof(char));
+            }
+            for(int i = 0; i < userList -> num_following; i++)
+            {
+                strcpy(arr[i], userList -> following[i]);
+            }
+            *following = userList -> num_following;
+
+            if(userList -> num_following == 0)
+                return arr = NULL;
+
+            return arr;
         }
         userList = userList -> nextPtr;
     }
