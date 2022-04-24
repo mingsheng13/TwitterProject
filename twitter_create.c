@@ -167,7 +167,7 @@ void getNewsFeed(twitter* twitter_system){      //done
 void followUsers(twitter* twitter_system)
 {
     int y = 0;
-    userPtr userList = twitter_system->username;
+    userPtr* userList = &(twitter_system->username);
     userFollowPtr* followingList;
     userFollowPtr* followerList;
 
@@ -186,38 +186,51 @@ void followUsers(twitter* twitter_system)
     if (followTarget[strlen(followTarget) - 1] == '\n')     //replace the newline char with null char.
         followTarget[strlen(followTarget) - 1] = '\0';
 
+    while(twitter_system -> username != NULL)
+    {
+        if(strcmp(twitter_system -> username -> username, twitter_system -> currentUser)==0)
+        {
+            insertFollow(&(twitter_system -> username -> following), followTarget);
+            (twitter_system -> username -> num_following) += 1;
+
+        }
+        if(strcmp(twitter_system -> username -> username, followTarget)==0)
+        {
+            insertFollow(&(twitter_system -> username -> follower), twitter_system -> currentUser);
+            (twitter_system -> username -> num_followers) += 1;
+        }
+        twitter_system -> username = twitter_system -> username -> nextPtr;
+    }
+
+    twitter_system -> username = *userList;
+
+    //following is not updated because this is passed by value not reference.
 //    while(userList != NULL)
 //    {
-//        if(strcmp(userList -> username, followTarget) ==0)
+//        if(strcmp(userList -> username, twitter_system -> currentUser)== 0)     //current user
 //        {
-//
+//            insertFollow(&(userList -> following), followTarget);      //insert follow target's name to current user's following list.
+//            (userList -> num_following) += 1;     //current user's following +1
+//            puts("added");
+//        }
+//        if(strcmp(userList -> username, followTarget)==0)       //follow target
+//        {
+//            insertFollow(&(userList -> follower), twitter_system -> currentUser);
+//            (userList -> num_followers) += 1;     //this increase both follower and following(no idea why) //follow target's follower +1
+//            puts("added2");
+//            y = 1;
+//            //insert current user's name into follow target's follower list.
 //        }
 //        userList = userList -> nextPtr;
 //    }
-    //following is not updated because this is passed by value not reference.
-    while(userList != NULL)
-    {
-        if(strcmp(userList -> username, twitter_system -> currentUser)== 0)     //current user
-        {
-            insertFollow(&(userList -> following), followTarget);      //insert follow target's name to current user's following list.
-            (userList -> num_following) += 1;     //current user's following +1
-            puts("added");
-        }
-        if(strcmp(userList -> username, followTarget)==0)       //follow target
-        {
-            insertFollow(&(userList -> follower), twitter_system -> currentUser);
-            (userList -> num_followers) += 1;     //this increase both follower and following(no idea why) //follow target's follower +1
-            puts("added2");
-            y = 1;
-            //insert current user's name into follow target's follower list.
-        }
-        userList = userList -> nextPtr;
-    }
-    if(y == 0)
-    {
-        puts("Error username inputted.");
-        return;
-    }
+
+
+//
+//    if(y == 0)
+//    {
+//        puts("Error username inputted.");
+//        return;
+//    }
 }
 
 void unfollowUsers(twitter* twitter_system){
