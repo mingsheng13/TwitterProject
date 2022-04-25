@@ -10,7 +10,6 @@
 int printUsers(twitter twitter_system, int mode);       //print all users in the linked list
 void printTweets(tweetPtr tweetList, char viewingUser[USR_LENGTH]);
 void insertUser(userPtr* userList, char username[USR_LENGTH]);
-void insertFollow(userFollowPtr* followList, char followName[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
 char** getFollowList(twitter twitter_system, int *following);
 
@@ -206,12 +205,63 @@ void followUsers(twitter* twitter_system)
 }
 
 void unfollowUsers(twitter* twitter_system){
+    userPtr user = twitter_system -> username;
+    char unfollowTarget[USR_LENGTH];
+    char** followingList;
+    int numFollowing;
+    int swapStart = 0;
     if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
     {
-        puts("Please select a user before posting tweet");
+        puts("Please select a user before unfollowing user.");
         return;
     }
-    printf("Test for unfollowUsers success.\n");
+
+    followingList = getFollowList(*twitter_system, &numFollowing);
+    for(int i = 0; i < numFollowing; i++)
+        printf("Username: %s\n", followingList[i]);
+
+    puts("Please enter the user you want to unfollow:");
+    fgets(unfollowTarget, USR_LENGTH, stdin);
+
+    if (unfollowTarget[strlen(unfollowTarget) - 1] == '\n')     //replace the newline char with null char.
+        unfollowTarget[strlen(unfollowTarget) - 1] = '\0';
+
+    while(user != NULL)
+    {
+        if(strcmp(user -> username, twitter_system -> currentUser)==0)
+        {
+            swapStart = 0;
+            for(int i = 0; i < numFollowing; i++)
+            {
+                if(strcmp(user -> following[i], unfollowTarget)==0)
+                {
+                    swapStart = 1;
+                }
+                if(swapStart == 1 && i != numFollowing - 1)     //deletion of array.
+                {
+                    strcpy(user -> following[i], user -> following[i+1]);
+                }
+            }
+            user -> num_following -= 1;
+        }
+        if(strcmp(user -> username, unfollowTarget)==0)
+        {
+            swapStart = 0;
+            for(int i = 0; i < user -> num_followers; i++)
+            {
+                if(strcmp(user -> follower[i], twitter_system -> currentUser)==0)
+                {
+                    swapStart = 1;
+                }
+                if(swapStart == 1 && i != (user -> num_followers - 1))
+                {
+                    strcpy(user -> follower[i], user -> follower[i+1]);
+                }
+            }
+            user -> num_followers -= 1;
+        }
+        user = user -> nextPtr;
+    }
 }
 
 void deleteUser(twitter* twitter_system){
@@ -331,6 +381,7 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
         }
         else if(mode == 2)      //print user without current user and following user.
         {
+            int bool = 0;
             int y = 0;
             char **followList;
             int following;
@@ -341,27 +392,31 @@ int printUsers(twitter twitter_system, int mode){       //print all users in the
                 printUsers(twitter_system, 1);
                 return 1;
             }
-            /*
-             * Problem here
-             * username still showing even after following user.
-             */
+
             while(userList != NULL)
             {
+                bool = 0;
                 for(int i = 0; i < following; i++)
                 {
                     if((strcmp(followList[i], userList -> username) == 0) || (strcmp(userList -> username, twitter_system.currentUser) == 0))
                     {
+                        bool = 1;
                         break;
                     }
-                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following);
                 }
+                if(bool == 0)
+                {
+                    printf("User: %s; Followers: %d; Following: %d\n" ,userList -> username, userList -> num_followers, userList -> num_following);
+                    y = 1;
+                }
+
                 userList = userList -> nextPtr;
             }
-//            if(y == 0)
-//            {
-//                puts("No user to show");
-//                return 0;
-//            }
+            if(y == 0)
+            {
+                puts("No user to show");
+                return 0;
+            }
         }
         return 1;
     }
@@ -402,41 +457,6 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
         previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
     }
 }
-
-//void insertFollow(userFollowPtr* followList, char followName[USR_LENGTH]){
-//    userFollowPtr previousNode = NULL;
-//    userFollowPtr currentNode = *followList;
-//    userFollowPtr newNode = (userFollowPtr) malloc(sizeof(userFollow));
-//
-//    if(newNode == NULL)
-//    {
-//        printf("error allocating memory");
-//        exit(0);
-//    }
-//
-//    strcpy(newNode -> followName, followName);
-//    newNode -> nextPtr = NULL;
-//
-//    while(currentNode != NULL)      //loop to the last place in the list.
-//    {
-//        if(strcmp(currentNode -> followName, followName) == 0)      //same username inputted
-//        {
-//            printf("You have already follow this user, please try again.\n");
-//            return;
-//        }
-//        previousNode = currentNode;
-//        currentNode = currentNode -> nextPtr;       //loop to the next one
-//    }
-//
-//    if(previousNode == NULL)        //first one in the list.
-//    {
-//        *followList = newNode;
-//    }
-//    else
-//    {
-//        previousNode -> nextPtr = newNode;      //points the previous node's pointer to the new node.
-//    }
-//}
 
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH])
 {
@@ -506,4 +526,5 @@ char** getFollowList(twitter twitter_system, int * following)       //function f
         }
         userList = userList -> nextPtr;
     }
+    return NULL;
 }
