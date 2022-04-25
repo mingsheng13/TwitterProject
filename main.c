@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "twitter_create.h"
 
-void printKeyInfo();
-
 int main() {
 
 
