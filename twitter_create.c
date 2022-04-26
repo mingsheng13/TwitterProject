@@ -299,7 +299,11 @@ void unfollowUsers(twitter* twitter_system){
                 {
                     swapStart = 1;
                 }
-                if(swapStart == 1 && i != numFollowing - 1)     //deletion of array.
+                if(swapStart == 1 && user->num_following == 1)
+                {
+                    strcpy(user -> following[0], "\0");
+                }
+                else if(swapStart == 1 && i != numFollowing - 1)     //deletion of array.
                 {
                     strcpy(user -> following[i], user -> following[i+1]);
                 }
@@ -315,7 +319,11 @@ void unfollowUsers(twitter* twitter_system){
                 {
                     swapStart = 1;
                 }
-                if(swapStart == 1 && i != (user -> num_followers - 1))
+                if(swapStart == 1 && user -> num_followers == 1)
+                {
+                    strcpy(user -> follower[0], "\0");
+                }
+                else if(swapStart == 1 && i != (user -> num_followers - 1))
                 {
                     strcpy(user -> follower[i], user -> follower[i+1]);
                 }
@@ -451,31 +459,35 @@ void deleteUser(twitter* twitter_system){
      * error: after deleting user who has posted tweets before, other tweet's id bugged and unable to post tweet.
      */
 
-    tweetPtr previousTweetPtr = NULL;
+
     tweetPtr currentTweetPtr = twitter_system -> news_feed;
+    tweetPtr previousTweetPtr = currentTweetPtr;
 
     if(currentTweetPtr == NULL)
     {
         return;
     }
 
-    if(strcmp(currentTweetPtr -> user, username)==0)        //first node in the list
+    while(currentTweetPtr != NULL)
     {
-        tweetPtr tmp = twitter_system -> news_feed;
-        twitter_system -> news_feed = currentTweetPtr -> nextPtr;
-        free(tmp);
-    }
-    else
-    {
-        while(currentTweetPtr != NULL)
+        if(strcmp(currentTweetPtr -> user, username)==0)
         {
-            previousTweetPtr = currentTweetPtr;
-            tweetPtr tmp = currentTweetPtr;
-            previousTweetPtr -> nextPtr = currentTweetPtr -> nextPtr;
-            free(tmp);
-            currentTweetPtr = currentTweetPtr -> nextPtr;
+            if(previousTweetPtr == currentTweetPtr)     //if the node to delete is at the first place
+            {
+                twitter_system -> news_feed = currentTweetPtr -> nextPtr;
+                free(previousTweetPtr);
+            }
+            else        //if it's not in the first place.
+            {
+                tweetPtr tmp = currentTweetPtr;
+                previousTweetPtr -> nextPtr = currentTweetPtr -> nextPtr;
+                free(tmp);
+            }
         }
+        previousTweetPtr = currentTweetPtr;
+        currentTweetPtr = currentTweetPtr -> nextPtr;
     }
+
     /*
      * problem^^^^^
      */
