@@ -389,23 +389,29 @@ void deleteUser(twitter* twitter_system){
     {
         return;
     }
+    int i = 0;
 
-    while(currentTweetPtr != NULL)
+    if(strcmp(currentTweetPtr -> user, username)==0)
     {
-        if(strcmp(currentTweetPtr ->user, username)==0)
-        {
-            //if it is the first node in the list
-            /*
-             * enter code here
-             */
-
-            //if it is not the first node in the list
-            /*
-             * enter code here
-             */
-        }
-        currentTweetPtr = currentTweetPtr -> nextPtr;
+        tweetPtr tmp = twitter_system -> news_feed;
+        twitter_system -> news_feed = currentTweetPtr -> nextPtr;
+        free(tmp);
     }
+    else
+    {
+        while(currentTweetPtr != NULL)
+        {
+            previousTweetPtr = currentTweetPtr;
+            tweetPtr tmp = currentTweetPtr;
+            previousTweetPtr -> nextPtr = currentTweetPtr -> nextPtr;
+            free(tmp);
+            currentTweetPtr = currentTweetPtr -> nextPtr;
+        }
+    }
+
+    /*
+     * remove user from every following & follower list
+     */
 
 
 
