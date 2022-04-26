@@ -345,6 +345,80 @@ void deleteUser(twitter* twitter_system){
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
 
+    if(!userIsAvailable(*twitter_system, username))
+    {
+        puts("Invalid username entered");
+        return;
+    }
+
+
+    /*
+     * ===============================================
+     * remove user from every following & follower list
+     * ===============================================
+     */
+
+    userPtr remFollowing = twitter_system -> username;
+    int swapStart;
+    while(remFollowing != NULL)
+    {
+        swapStart = 0;
+        for(int i = 0; i < remFollowing -> num_following; i++)
+        {
+            if(strcmp(remFollowing -> following[i], username) == 0)
+            {
+                swapStart = 1;
+            }
+            if(swapStart == 1 && remFollowing -> num_following == 1)        //only one in the list
+            {
+                strcpy(remFollowing -> following[0], "\0");
+            }
+            else if(swapStart == 1 && i != remFollowing -> num_following - 1)
+            {
+                strcpy(remFollowing -> following[i] , remFollowing -> following[i + 1]);
+            }
+        }
+        if(swapStart == 1)
+        {
+            remFollowing -> num_following -= 1;
+        }
+
+
+        remFollowing = remFollowing -> nextPtr;
+    }
+
+    //remove current user from every user's following list
+
+    userPtr remFollowers = twitter_system -> username;
+    while(remFollowers != NULL)
+    {
+        swapStart = 0;
+        for(int i = 0; i< remFollowers -> num_followers; i++)
+        {
+            if(strcmp(remFollowers -> follower[i], username)==0)
+            {
+                swapStart = 1;
+            }
+            if(swapStart == 1 && remFollowers -> num_followers == 1)
+            {
+                strcpy(remFollowers -> follower[0], "\0");
+            }
+            else if(swapStart == 1 && i != remFollowers -> num_followers -1)
+            {
+                strcpy(remFollowers -> follower[i], remFollowers -> follower[i+1]);
+            }
+        }
+        if(swapStart == 1)
+            remFollowers -> num_followers -= 1;
+        remFollowers = remFollowers -> nextPtr;
+    }
+
+    /*
+     * ===============================
+     * remove user from username list.
+     * ===============================
+     */
+
     if(strcmp(twitter_system -> currentUser, username) == 0)    //if the current user is the currently selected user.
     {
         strcpy(twitter_system -> currentUser, "Not Selected");
@@ -354,12 +428,6 @@ void deleteUser(twitter* twitter_system){
     {                                                                               //stop if the username is found
         previousPtr = currentPtr;
         currentPtr = currentPtr -> nextPtr;
-    }
-
-    if(currentPtr == NULL)      //if username is not found in the list
-    {
-        puts("Error username entered! ");
-        return;
     }
 
     if(previousPtr == NULL)     //if the username is the first one in the list
@@ -380,6 +448,7 @@ void deleteUser(twitter* twitter_system){
      * ===================
      * delete user's tweet
      * ===================
+     * error: after deleting user who has posted tweets before, other tweet's id bugged and unable to post tweet.
      */
 
     tweetPtr previousTweetPtr = NULL;
@@ -389,9 +458,8 @@ void deleteUser(twitter* twitter_system){
     {
         return;
     }
-    int i = 0;
 
-    if(strcmp(currentTweetPtr -> user, username)==0)
+    if(strcmp(currentTweetPtr -> user, username)==0)        //first node in the list
     {
         tweetPtr tmp = twitter_system -> news_feed;
         twitter_system -> news_feed = currentTweetPtr -> nextPtr;
@@ -408,15 +476,9 @@ void deleteUser(twitter* twitter_system){
             currentTweetPtr = currentTweetPtr -> nextPtr;
         }
     }
-
     /*
-     * remove user from every following & follower list
+     * problem^^^^^
      */
-
-
-
-
-
 }
 
 void endTurn(twitter* twitter_system){
