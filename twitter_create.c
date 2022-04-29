@@ -132,7 +132,6 @@ void postTweets(twitter* twitter_system){
 }
 
 void getNewsFeed(twitter* twitter_system){      //done
-    int bool;
     int check = 0;
     tweetPtr tweetList = twitter_system -> news_feed;
     int numFollowing;
@@ -456,41 +455,38 @@ void deleteUser(twitter* twitter_system){
      * ===================
      * delete user's tweet
      * ===================
-     * error: after deleting user who has posted tweets before, other tweet's id bugged and unable to post tweet.
      */
 
 
     tweetPtr currentTweetPtr = twitter_system -> news_feed;
-    tweetPtr previousTweetPtr = currentTweetPtr;
+    tweetPtr previousTweetPtr = NULL;
 
     if(currentTweetPtr == NULL)
     {
         return;
     }
 
-    while(currentTweetPtr != NULL)
+    //first in the list
+    while(currentTweetPtr != NULL && strcmp(currentTweetPtr -> user, username) == 0)    //if the tweet to delete is at the front
+    {
+        previousTweetPtr = currentTweetPtr;
+        twitter_system -> news_feed = currentTweetPtr -> nextPtr;
+        currentTweetPtr = twitter_system -> news_feed;
+        free(previousTweetPtr);
+    }
+
+    while(currentTweetPtr != NULL)      //if it's not at the front
     {
         if(strcmp(currentTweetPtr -> user, username)==0)
         {
-            if(previousTweetPtr == currentTweetPtr)     //if the node to delete is at the first place
-            {
-                twitter_system -> news_feed = currentTweetPtr -> nextPtr;
-                free(previousTweetPtr);
-            }
-            else        //if it's not in the first place.
-            {
-                tweetPtr tmp = currentTweetPtr;
-                previousTweetPtr -> nextPtr = currentTweetPtr -> nextPtr;
-                free(tmp);
-            }
+            previousTweetPtr -> nextPtr = currentTweetPtr -> nextPtr;
+            free(currentTweetPtr);
+            currentTweetPtr = previousTweetPtr;
         }
         previousTweetPtr = currentTweetPtr;
         currentTweetPtr = currentTweetPtr -> nextPtr;
     }
 
-    /*
-     * problem^^^^^
-     */
 }
 
 void endTurn(twitter* twitter_system){
