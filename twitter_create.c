@@ -14,6 +14,7 @@ char** getFollowList(twitter twitter_system, int *following);
 int userIsAvailable(twitter twitter_system, char target[USR_LENGTH]);
 
 void printKeyInfo();
+void welcomeGuide();
 
 void create_twitter_system(twitter * twitter_system){
     strcpy(twitter_system -> currentUser, "Not Selected");      //init. the current user as Not Selected
@@ -22,12 +23,13 @@ void create_twitter_system(twitter * twitter_system){
     twitter_system -> username = NULL;      //init. the username linked list
     twitter_system -> news_feed = NULL;
     //printf("Current user is: %s\n", twitter_system -> currentUser);
+    welcomeGuide();
     printKeyInfo();
     size_t choice;
-    printf("? ");
+    printf("Your choice: ");
     scanf("%zu", &choice);
     getchar();      //clear input buffer
-
+    printf("------------------------------------------------------------------------------->\n\n");
     while (choice >= 0 && choice <= 8){
         switch (choice) {
             case 0:
@@ -62,16 +64,27 @@ void create_twitter_system(twitter * twitter_system){
         }
         printf("Current user is: %s\n", twitter_system -> currentUser);
         printKeyInfo();
-        printf("? ");
+        printf("Your choice: ");
         scanf("%zu",&choice);
 //        fflush(stdin);
         getchar();  //clear input buffer
+        printf("------------------------------------------------------------------------------->\n\n");
     }
+}
+
+void welcomeGuide(){
+    printf("================================================================================\n");
+    printf("Copyright (C) Xinyuan He and Ming Sheng Chai Corporation. All rights reserved.\n");
+    printf("Check the terminal...\n");
+    printf("Check the linked list...\n");
+    printf("Twitter system build up success!\n");
+    printf("Welcome to the Twitter system!\n");
+    printf("================================================================================\n");
 }
 
 void createUsers(twitter* twitter_system){      //create user and prints all available users.
     char username[USR_LENGTH];
-    printf("Enter Username: \n");
+    printf("Please enter Username: \n");
     fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
 
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
@@ -79,11 +92,11 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
 
     insertUser(&twitter_system -> username, username);      //insert username into linkedList
     twitter_system -> num_users += 1;
-
+    printf("User create successful!\n");
     printUsers(*twitter_system, 0);
 
 
-    puts("==============================================");
+//    puts("==============================================");
 }
 
 void selectUser(twitter * twitter_system){
@@ -94,6 +107,7 @@ void selectUser(twitter * twitter_system){
 
     printf("Please enter a user name:\n");
     fgets(user, USR_LENGTH, stdin);     //use fgets to scan string
+    printf("------------------------------------------------------------------------------->\n\n");
 
     if(user[strlen(user)-1] =='\n')     //replace the newline char with null char.
         user[strlen(user)-1] = '\0';
@@ -123,6 +137,7 @@ void postTweets(twitter* twitter_system){
     char tweetInput[TWEET_LENGTH];
     puts("Enter your tweet: ");
     fgets(tweetInput,TWEET_LENGTH,stdin);
+    printf("------------------------------------------------------------------------------->\n\n");
 
     if(tweetInput[strlen(tweetInput)-1] =='\n')     //replace the newline char with null char.
         tweetInput[strlen(tweetInput)-1] = '\0';
@@ -200,6 +215,7 @@ void followUsers(twitter* twitter_system)
     }
     puts("Please enter the user you want to follow:");
     fgets(followTarget, USR_LENGTH, stdin);
+    printf("------------------------------------------------------------------------------->\n\n");
 
     if (followTarget[strlen(followTarget) - 1] == '\n')     //replace the newline char with null char.
         followTarget[strlen(followTarget) - 1] = '\0';
@@ -271,6 +287,7 @@ void unfollowUsers(twitter* twitter_system){
 
     puts("Please enter the user you want to unfollow:");
     fgets(unfollowTarget, USR_LENGTH, stdin);
+    printf("------------------------------------------------------------------------------->\n\n");
 
     if (unfollowTarget[strlen(unfollowTarget) - 1] == '\n')     //replace the newline char with null char.
         unfollowTarget[strlen(unfollowTarget) - 1] = '\0';
@@ -348,6 +365,7 @@ void deleteUser(twitter* twitter_system){
     printUsers(*twitter_system, 0);
     printf("Enter the username that you want to delete:");
     fgets(username, USR_LENGTH, stdin);     //use fgets to scan string
+    printf("------------------------------------------------------------------------------->\n\n");
 
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
@@ -496,20 +514,25 @@ void endTurn(twitter* twitter_system){
 
 void endTwitter(){
     printf("Thank you for using.\n");
+    printf("================================================================================");
     exit(0);
 }
 
 void printKeyInfo(){
-    printf("\n\nEnter the number between 0 and 6:\n");
-    printf("Enter 0: Create a user\n");
-    printf("Enter 1: Select a user\n");
-    printf("Enter 2: Post tweets\n");
-    printf("Enter 3: News feed\n");
-    printf("Enter 4: Follow users\n");
-    printf("Enter 5: Unfollow users\n");
-    printf("Enter 6: delete the user\n");
-    printf("Enter 7: End this turn\n");
-    printf("Enter 8: End the Twitter system\n");
+    printf("================================================================================\n");
+    printf("\n============================== M A I N     M E N U =============================\n");
+    printf("Enter the number between 0 and 6:                                                    \n");
+//    printf("                                                                                     \n");
+    printf("Enter 0: Create a user                              **                                  \n");
+    printf("Enter 1: Select a user                           **                                    \n");
+    printf("Enter 2: Post tweets                           **                                      \n");
+    printf("Enter 3: News feed                          **                                         \n");
+    printf("Enter 4: Follow users                     **    ***********************************    \n");
+    printf("Enter 5: Unfollow users                     **                                        \n");
+    printf("Enter 6: delete the user                       **                                       \n");
+    printf("Enter 7: End this turn                           **                                     \n");
+    printf("Enter 8: End the Twitter system                     **                                   \n");
+    printf("\n================================================================================\n\n");
 }
 
 int printUsers(twitter twitter_system, int mode){       //print all users in the linked list
@@ -599,7 +622,7 @@ void insertUser(userPtr* userList, char username[USR_LENGTH])
     userPtr newNode = (userPtr)malloc(sizeof(user));        //allocate memory
     if(newNode == NULL)
     {
-        printf("error allocating memory");
+        printf("error allocating memory\n");
         exit(1);
     }
     strcpy(newNode -> username, username);
@@ -692,3 +715,4 @@ int userIsAvailable(twitter twitter_system, char target[USR_LENGTH])
     }
     return 0;
 }
+
