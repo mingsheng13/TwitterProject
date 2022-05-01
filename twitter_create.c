@@ -16,7 +16,8 @@ int userIsAvailable(twitter twitter_system, char target[USR_LENGTH]);
 void printKeyInfo();
 void welcomeGuide();
 
-void create_twitter_system(twitter * twitter_system){
+void create_twitter_system(twitter * twitter_system)
+{
     strcpy(twitter_system -> currentUser, "Not Selected");      //init. the current user as Not Selected
     twitter_system -> num_users = 0;
     twitter_system -> num_tweets = 0;
@@ -30,7 +31,7 @@ void create_twitter_system(twitter * twitter_system){
     scanf("%zu", &choice);
     getchar();      //clear input buffer
     printf("------------------------------------------------------------------------------->\n\n");
-    while (choice >= 0 && choice <= 8){
+    while (choice){
         switch (choice) {
             case 0:
                 createUsers(twitter_system);
@@ -60,7 +61,11 @@ void create_twitter_system(twitter * twitter_system){
                 endTwitter();
                 break;
             default:
-                puts("error");
+                printf("Enter error! Please enter again:");
+                scanf("%zu", &choice);
+                getchar();      //clear input buffer
+                printf("------------------------------------------------------------------------------->\n\n");
+                continue;
         }
         printf("Current user is: %s\n", twitter_system -> currentUser);
         printKeyInfo();
