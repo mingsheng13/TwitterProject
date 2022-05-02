@@ -31,7 +31,7 @@ void create_twitter_system(twitter * twitter_system)
     scanf("%zu", &choice);
     getchar();      //clear input buffer
     printf("------------------------------------------------------------------------------->\n\n");
-    while (choice){
+    while (1){
         switch (choice) {
             case 1:
                 createUsers(twitter_system);
@@ -95,8 +95,15 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
     if(username[strlen(username)-1] =='\n')     //replace the newline char with null char.
         username[strlen(username)-1] = '\0';
 
+    if(twitter_system->num_users >= MAX_USERS)
+    {
+        puts("Unable to create user. Max user reached.");
+        return;
+    }
+
     insertUser(&twitter_system -> username, username);      //insert username into linkedList
     twitter_system -> num_users += 1;
+
     printf("User create successful!\n");
     printUsers(*twitter_system, 0);
 
@@ -136,6 +143,12 @@ void postTweets(twitter* twitter_system){
     if(strcmp(twitter_system -> currentUser, "Not Selected") == 0)
     {
         puts("Please select a user before posting tweet");
+        return;
+    }
+
+    if(twitter_system -> num_tweets >= MAX_TWEETS)
+    {
+        puts("Unable to post tweet. Max tweet reached!");
         return;
     }
 
