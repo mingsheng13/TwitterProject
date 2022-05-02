@@ -33,31 +33,31 @@ void create_twitter_system(twitter * twitter_system)
     printf("------------------------------------------------------------------------------->\n\n");
     while (choice){
         switch (choice) {
-            case 0:
+            case 1:
                 createUsers(twitter_system);
                 break;
-            case 1:
+            case 2:
                 selectUser(twitter_system);
                 break;
-            case 2:
+            case 3:
                 postTweets(twitter_system);
                 break;
-            case 3:
+            case 4:
                 getNewsFeed(twitter_system);
                 break;
-            case 4:
+            case 5:
                 followUsers(twitter_system);
                 break;
-            case 5:
+            case 6:
                 unfollowUsers(twitter_system);
                 break;
-            case 6:
+            case 7:
                 deleteUser(twitter_system);
                 break;
-            case 7:
+            case 8:
                 endTurn(twitter_system);
                 break;
-            case 8:
+            case 9:
                 endTwitter();
                 break;
             default:
@@ -526,17 +526,17 @@ void endTwitter(){
 void printKeyInfo(){
     printf("================================================================================\n");
     printf("\n============================== M A I N     M E N U =============================\n");
-    printf("Enter the number between 0 and 6:                                                    \n");
+    printf("Enter the number between 1 and 9:                                                    \n");
 //    printf("                                                                                     \n");
-    printf("Enter 0: Create a user                              **                                  \n");
-    printf("Enter 1: Select a user                           **                                    \n");
-    printf("Enter 2: Post tweets                           **                                      \n");
-    printf("Enter 3: News feed                          **                                         \n");
-    printf("Enter 4: Follow users                     **    ***********************************    \n");
-    printf("Enter 5: Unfollow users                     **                                        \n");
-    printf("Enter 6: delete the user                       **                                       \n");
-    printf("Enter 7: End this turn                           **                                     \n");
-    printf("Enter 8: End the Twitter system                     **                                   \n");
+    printf("Enter 1: Create a user                              **                                  \n");
+    printf("Enter 2: Select a user                           **                                    \n");
+    printf("Enter 3: Post tweets                           **                                      \n");
+    printf("Enter 4: News feed                          **                                         \n");
+    printf("Enter 5: Follow users                     **    ********************************    \n");
+    printf("Enter 6: Unfollow users                     **                                        \n");
+    printf("Enter 7: delete the user                       **                                       \n");
+    printf("Enter 8: End this turn                           **                                     \n");
+    printf("Enter 9: End the Twitter system                     **                                   \n");
     printf("\n================================================================================\n\n");
 }
 
