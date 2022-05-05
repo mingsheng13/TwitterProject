@@ -12,7 +12,6 @@ void insertUser(userPtr* userList, char username[USR_LENGTH]);
 void insertTweet(tweetPtr* tweetList, char msg[TWEET_LENGTH], int* id, char author[USR_LENGTH]);
 char** getFollowList(twitter twitter_system, int *following);
 int userIsAvailable(twitter twitter_system, char target[USR_LENGTH]);
-
 void printKeyInfo();
 void welcomeGuide();
 
@@ -71,7 +70,6 @@ void create_twitter_system(twitter * twitter_system)
         printKeyInfo();
         printf("Your choice: ");
         scanf("%zu",&choice);
-//        fflush(stdin);
         getchar();  //clear input buffer
         printf("------------------------------------------------------------------------------->\n\n");
     }
@@ -107,8 +105,6 @@ void createUsers(twitter* twitter_system){      //create user and prints all ava
     printf("User create successful!\n");
     printUsers(*twitter_system, 0);
 
-
-//    puts("==============================================");
 }
 
 void selectUser(twitter * twitter_system){
